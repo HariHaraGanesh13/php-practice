@@ -2,7 +2,7 @@
 
 class User
 {
-    private string $name;
+    private string $ame;
     private string $email;
 
     public function __construct(string $name, string $email)
