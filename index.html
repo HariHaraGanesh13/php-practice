@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sneaker Store - Cart & Wishlist</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="header">
+  <h1>👟 Sneaker Store</h1>
+  <div class="counters">
+    <div class="counter">
+      <span class="counter-icon">🛒</span>
+      <span id="cart-count">0</span>
+    </div>
+    <div class="counter">
+      <span class="counter-icon">❤️</span>
+      <span id="wishlist-count">0</span>
+    </div>
+  </div>
+</div>
+
+<div class="products-container">
+  <!-- Product 1 - Onitsuka Tiger -->
+  <div class="product-card" data-id="1">
+    <img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400" alt="Onitsuka Tiger" class="product-image">
+    <h2 class="product-name">Nike Air force</h2>
+    <div class="product-buttons">
+      <button class="btn btn-cart" onclick="addToCart(1)">Add to Cart</button>
+      <button class="btn btn-wishlist" id="wishlist-btn-1" onclick="toggleWishlist(1)">
+        <span id="heart-1">🤍</span> Wishlist
+      </button>
+    </div>
+  </div>
+
+  <!-- Product 2 - New Balance -->
+  <div class="product-card" data-id="2">
+    <img src="https://images.unsplash.com/photo-1539185441755-769473a23570?w=400" alt="New Balance" class="product-image">
+    <h2 class="product-name">New Balance 574 Classic</h2>
+    <div class="product-buttons">
+      <button class="btn btn-cart" onclick="addToCart(2)">Add to Cart</button>
+      <button class="btn btn-wishlist" id="wishlist-btn-2" onclick="toggleWishlist(2)">
+        <span id="heart-2">🤍</span> Wishlist
+      </button>
+    </div>
+  </div>
+
+  <!-- Product 3 - Puma -->
+  <div class="product-card" data-id="3">
+    <img src="https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400" alt="Puma" class="product-image">
+    <h2 class="product-name">Puma RS-X Reinvention</h2>
+    <div class="product-buttons">
+      <button class="btn btn-cart" onclick="addToCart(3)">Add to Cart</button>
+      <button class="btn btn-wishlist" id="wishlist-btn-3" onclick="toggleWishlist(3)">
+        <span id="heart-3">🤍</span> Wishlist
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-section">
+  <!-- Cart -->
+  <h2 class="section-title">🛒 Shopping Cart</h2>
+  <div class="cart-section">
+    <div class="items-container" id="cart-items">
+      <p class="empty-message">Your cart is empty</p>
+    </div>
+  </div>
+
+  <!-- Wishlist -->
+  <h2 class="section-title">❤️ Wishlist</h2>
+  <div class="wishlist-section">
+    <div class="items-container" id="wishlist-items">
+      <p class="empty-message">Your wishlist is empty</p>
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-icon" id="modal-icon">⚠️</div>
+    <h3 class="modal-title" id="modal-title">Confirm Action</h3>
+    <p class="modal-message" id="modal-message">Are you sure you want to remove this item?</p>
+    <div class="modal-buttons">
+      <button class="modal-btn modal-btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-btn modal-btn-confirm" id="modal-confirm-btn" onclick="confirmModal()">Remove</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
