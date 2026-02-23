@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product Search</title>
+</head>
+<body>
+
+<h1>Product Search</h1>
+
+<input autocomplete="off" id="searchBox" placeholder="Type 3 characters to search..." type="text">
+
+<div id="results"></div>
+
+<div id="selected"></div>
+
+<script>
+
+    var searchBox = document.getElementById('searchBox');
+    var results = document.getElementById('results');
+    var selected = document.getElementById('selected');
+    var timer = null;
+
+    // // block special characters from being typed
+    // searchBox.addEventListener('keypress', function (e) {
+    //     var char = String.fromCharCode(e.which);
+    //     var allowed = /^[a-zA-Z0-9 ]$/;
+    //
+    //     if (!allowed.test(char)) {
+    //         e.preventDefault();
+    //     }
+    // });
+    //
+    // // also block paste of special characters
+    // searchBox.addEventListener('paste', function (e) {
+    //     e.preventDefault();
+    //     var pasted = (e.clipboardData || window.clipboardData).getData('text');
+    //     var cleaned = pasted.replace(/[^a-zA-Z0-9 ]/g, '');
+    //     searchBox.value = searchBox.value + cleaned;
+    // });
+
+
+    searchBox.addEventListener('input', function () {
+        var query = this.value.trim();
+
+        if (timer) clearTimeout(timer);
+
+        if (query.length < 3) {
+            results.innerHTML = '';
+            return;
+        }
+
+        timer = setTimeout(function () {
+            searchProducts(query);
+        }, 300);
+    });
+
+    //connects to search.php
+    function searchProducts(query) {
+        var obj = new XMLHttpRequest();
+        obj.open("GET", "search.php?q=" + encodeURIComponent(query), true);
+        obj.send();
+
+        obj.onreadystatechange = function () {
+            if (obj.readyState == 4 && obj.status == 200) {
+                var data = JSON.parse(obj.responseText);
+                showResults(data);
+            }
+        };
+    }
+
+    //view dropdown list
+    function showResults(data) {
+        results.innerHTML = '';
+
+        if (data.results.length == 0) {
+            results.innerHTML = '<p>No products found</p>';
+            return;
+        }
+
+        for (var i = 0; i < data.results.length; i++) {
+            var product = data.results[i];
+            var div = document.createElement('div');
+            div.innerHTML = product.name + ' - ₹' + Number(product.price).toLocaleString('en-IN')
+                + '<br><small style="color:gray;">' + product.category + '</small>';
+            div.style.cursor = 'pointer';
+            div.style.padding = '8px';
+            div.style.borderBottom = '1px solid #ccc';
+
+            div.onmouseover = function () {
+                this.style.background = '#f0f0f0';
+            };
+            div.onmouseout = function () {
+                this.style.background = '#fff';
+            };
+
+            div.onclick = (function (p) {
+                return function () {
+                    selectProduct(p);
+                };
+            })(product);
+
+            results.appendChild(div);
+        }
+    }
+
+    // product details from product.php
+    function selectProduct(product) {
+        searchBox.value = product.name;
+        results.innerHTML = '';
+        selected.innerHTML = '<p>Loading...</p>';
+
+        var obj = new XMLHttpRequest();
+        obj.open("GET", "product.php?id=" + product.id, true);
+        obj.send();
+
+        obj.onreadystatechange = function () {
+            if (obj.readyState == 4 && obj.status == 200) {
+                var data = JSON.parse(obj.responseText);
+
+                if (data.error) {
+                    selected.innerHTML = '<p style="color:red;">' + data.error + '</p>';
+                    return;
+                }
+
+                var p = data.product;
+                selected.innerHTML =
+                    '<div style="margin-top:20px; border:1px solid #ccc; padding:15px;">' +
+                    '<button onclick="document.getElementById(\'selected\').innerHTML=\'\'" style="float:right; cursor:pointer;">✕ Close</button>' +
+                    '<img src="' + p.image_url + '" width="150" style="display:block; margin-bottom:10px;">' +
+                    '<h2>' + p.name + '</h2>' +
+                    '<table>' +
+                    '<tr><td style="color:gray; padding:5px 20px 5px 0;">Category</td><td>' + p.category + '</td></tr>' +
+                    '<tr><td style="color:gray; padding:5px 20px 5px 0;">Price</td><td>₹' + Number(p.price).toLocaleString('en-IN') + '</td></tr>' +
+                    '</table>' +
+                    '<h3 style="margin-top:15px;">Description</h3>' +
+                    '<p>' + p.description + '</p>' +
+                    '</div>';
+            }
+        };
+    }
+
+    // close dropdown
+    document.addEventListener('click', function (e) {
+        if (e.target !== searchBox) {
+            results.innerHTML = '';
+        }
+    });
+
+</script>
+
+</body>
+</html>
